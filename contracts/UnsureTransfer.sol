@@ -23,8 +23,9 @@ contract UnsureTransfer {
     event TransferConfirmed(address sender, address receiver, uint amount);
     event TransferCancelled(address sender, address receiver, uint amount);
 
-    function intiateUnsureTransfer(address payable _receiver) external payable {
+    function initiateUnsureTransfer(address payable _receiver) external payable {
         require(msg.value > 0, "Amount must be greater than 0");
+        receiver = _receiver;
 
         transactions[_receiver] = Transaction({
             sender: payable(msg.sender),
@@ -40,8 +41,9 @@ contract UnsureTransfer {
 
     function confirmationStringProvider(string calldata _confirmationString) external{
         Transaction storage initialTransaction = transactions[msg.sender];
-        // require(initialTransaction.receiver == msg.sender, "You are not the receiver");
-        require(initialTransaction.sender != address(0), "No escrow found");
+        require(initialTransaction.receiver == msg.sender, "You are not the receiver");
+        // console.log("Sender: ", initialTransaction.sender);
+        // require(initialTransaction.sender != address(0), "No transaction initiated");
         require(bytes(_confirmationString).length > 0, "Purpose cannot be empty");
 
         initialTransaction.confirmationString = _confirmationString;
