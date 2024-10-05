@@ -77,5 +77,9 @@ contract UnsureTransfer {
 
         delete transactions[receiver];
     }
+
+    function getTransaction(address trnxAdd) external view returns(Transaction memory){
+        return transactions[trnxAdd];
+    }
     
 }
