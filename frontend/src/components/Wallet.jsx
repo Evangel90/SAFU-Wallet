@@ -1,17 +1,23 @@
 import { Button, Stack, Heading, Box, Input } from '@chakra-ui/react'
-// import { Wallet } from 'ethers'
 import { useState } from 'react'
-// const generateAccount = require('../utils/utils')
-import {generateAccount} from '../utils/utils'
+import { useNavigate } from 'react-router-dom'
+import {generateAccount, getAccountBalance} from '../utils/utils'
 
 function Wallet() {
     const [account, setAccount] = useState()
+    const [accBalance, setAccBalance] = useState()
     const [showAddAccountForm, setShowAddAccountForm] = useState(false)
-    const [privateKey, setPrivateKey] = useState('') 
+    const [privateKey, setPrivateKey] = useState('')
+    const navigate = useNavigate()
 
-    const newAccount = () =>{
+
+    const newAccount = async() =>{
         const generatedAccount = generateAccount("")
         setAccount(generatedAccount)
+        const balance = await getAccountBalance(generatedAccount.address)
+        setAccBalance(balance)
+        navigate('/account-details', { state: { account: generatedAccount, accBalance: balance } })
+        console.log(balance)
     }
 
     const addAccount = (e) => {
@@ -22,14 +28,17 @@ function Wallet() {
         setPrivateKey(e.target.value) 
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async() => {
         console.log(privateKey)
         try{
             const addedAccount = generateAccount(privateKey)
             setAccount(addedAccount)
+            const balance = await getAccountBalance(addedAccount.address)
+            setAccBalance(balance)
+            navigate('/account-details', { state: { account: addedAccount, accBalance: balance } })
             console.log(addedAccount.address)
         }catch(err){
-            console.log('Something wrong! Unable to get account')
+            console.log('Something wrong! Unable to get account', err)
         }
     }
     
@@ -46,7 +55,7 @@ function Wallet() {
                 <Button colorScheme='teal' size='lg' onClick={addAccount}>
                     Add Account
                 </Button>
-                {account && (<h2>{account.address}</h2>)}
+                {/* {account && (<h2>{account.address}</h2>)} */}
             </Stack>
             {showAddAccountForm && (
                 <Box mt={4}>
