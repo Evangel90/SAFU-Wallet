@@ -4,18 +4,28 @@ import { Heading, Button, Stack } from '@chakra-ui/react';
 import Transfer from './Transfer';
 import UnsureTransfer from './UnsureTransfer';
 import Notifications from './Notifications';
+import { getAccountBalance } from '../utils/utils';
 
 function AccountDetails() {
     const location = useLocation();
-    const { account, accBalance } = location.state || {};
+    const { account, accBalance, privateKey } = location.state || {};
     const [transferClicked, setTransferClicked] = useState(false);
     const [unsureTransferClicked, setUnsureTransferClicked] = useState(false);
     const [notificationsClicked, setNotificationsClicked] = useState(false);
+    const [accountBal, setAccountBal] = useState()
+    // const [click, setClick] = useState(false)
 
-    const handleTransfer = () => {
+    const updateBal = async() => {
+        const balance = await getAccountBalance()
+        setAccountBal(balance)
+    }
+
+    const handleTransfer = async() => {
         setTransferClicked(true)
         setUnsureTransferClicked(false)
         setNotificationsClicked(false)
+        // setClick(true)
+        
         console.log(transferClicked)
     }
 
@@ -44,14 +54,14 @@ function AccountDetails() {
                         Wallet Address: {account.address}
                     </Heading>
                     <Heading size='md' fontSize='20px'>
-                        Wallet Balance: {accBalance}
+                        Wallet Balance: {accBalance} eth
                     </Heading>
                     <Stack spacing={4} mt={2} direction='row'>
                         <Button size='md' onClick={handleTransfer}>Transfer</Button>
                         <Button size='md' onClick={handleUnsureTransfer}>UnsureTransfer</Button>
                         <Button size='md' onClick={handleNotifications}>Notifications</Button>
                     </Stack>
-                    <Transfer clicked={transferClicked} />
+                    <Transfer clicked={transferClicked} privateKey={privateKey} updateBal={updateBal}/>
                     <UnsureTransfer clicked={unsureTransferClicked} />
                     <Notifications clicked={notificationsClicked} />
 

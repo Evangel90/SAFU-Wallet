@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { Stack, Input, Button } from '@chakra-ui/react'
 import { transferFunds } from '../utils/utils'
 
-function Transfer({ clicked}) {
-    const[recipientAddress, setRecipientAddress] = useState() 
-    const[amount, setAmount] = useState()
+function Transfer({ clicked, privateKey, updateBal }) {
+    const[recipientAddress, setRecipientAddress] = useState('') 
+    const[amount, setAmount] = useState('')
 
     const handleAddressInput = (e) => {
         setRecipientAddress(e.target.value)
@@ -16,7 +16,8 @@ function Transfer({ clicked}) {
     }
 
     const handleTransfer = () => {
-        transferFunds(recipientAddress, amount)
+        transferFunds(privateKey, recipientAddress, amount)
+        updateBal()
     }
 
     return (

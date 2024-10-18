@@ -35,7 +35,9 @@ function Wallet() {
             setAccount(addedAccount)
             const balance = await getAccountBalance(addedAccount.address)
             setAccBalance(balance)
-            navigate('/account-details', { state: { account: addedAccount, accBalance: balance } })
+            navigate('/account-details', 
+                { state: { account: addedAccount, accBalance: balance, privateKey: privateKey } }
+            )
             console.log(addedAccount.address)
         }catch(err){
             console.log('Something wrong! Unable to get account', err)
