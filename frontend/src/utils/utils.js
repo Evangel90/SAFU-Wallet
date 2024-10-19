@@ -1,6 +1,8 @@
 import { ethers, JsonRpcProvider } from "ethers"
 
 const provider = new JsonRpcProvider("https://eth-holesky.g.alchemy.com/v2/jieawsXv4jXd1QLvQ6R500Nty_qryZVm")
+const contractAddr = '0x6A40Efcce5f3D73c7b2Ed8F9c75a101438fa1Fa6'
+const contractName = "UnsureTransfer"
 
 export function generateAccount(privateKey){
     let wallet
@@ -44,6 +46,15 @@ export async function transferFunds(_privateKey, receiver, amount){
     }
     
 
+}
+
+
+export async function unsureTransferInit(senderAccount, receiverAddress){
+    const contract = await ethers.getContractAt(contractName, contractAddr, senderAccount)
+    const transferInit = await contract.initiateUnsureTransfer(receiverAdd, {value: ethers.parseEther("1")})
+    await transferInit.wait()
+
+    console.log('Success', confirmation)
 }
 
 
