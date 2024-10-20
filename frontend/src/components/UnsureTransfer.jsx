@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Stack, Input, Button } from '@chakra-ui/react'
 import { unsureTransferInit } from '../utils/utils'
 
-function UnsureTransfer({clicked, account, privateKey}){
+function UnsureTransfer({clicked, privateKey}){
     const[recipientAddress, setRecipientAddress] = useState('') 
     const[amount, setAmount] = useState('')
 

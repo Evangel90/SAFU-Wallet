@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Heading, Button, Stack } from '@chakra-ui/react';
 import Transfer from './Transfer';
@@ -14,11 +14,20 @@ function AccountDetails() {
     const [notificationsClicked, setNotificationsClicked] = useState(false);
     const [accountBal, setAccountBal] = useState()
     // const [click, setClick] = useState(false)
-
-    const updateBal = async() => {
-        const balance = await getAccountBalance()
+    const updateBal = async () => {
+        console.log('inside updateBal')
+        const balance = await getAccountBalance(account.address)
+        console.log(balance)
         setAccountBal(balance)
     }
+
+    useEffect(()=>{
+        console.log('useEffect working');
+        (async()=> {
+            await updateBal()
+        })()
+    }, [])
+
 
     const handleTransfer = async() => {
         setTransferClicked(true)
@@ -54,15 +63,15 @@ function AccountDetails() {
                         Wallet Address: {account.address}
                     </Heading>
                     <Heading size='md' fontSize='20px'>
-                        Wallet Balance: {accBalance} eth
+                        Wallet Balance: {accountBal} eth
                     </Heading>
                     <Stack spacing={4} mt={2} direction='row'>
                         <Button size='md' onClick={handleTransfer}>Transfer</Button>
                         <Button size='md' onClick={handleUnsureTransfer}>UnsureTransfer</Button>
                         <Button size='md' onClick={handleNotifications}>Notifications</Button>
                     </Stack>
-                    <Transfer clicked={transferClicked} privateKey={privateKey} updateBal={updateBal}/>
-                    <UnsureTransfer clicked={unsureTransferClicked} account={account} privateKey={privateKey} />
+                    <Transfer clicked={transferClicked} privateKey={privateKey} updateBal={updateBal} accountBal={accountBal}/>
+                    <UnsureTransfer clicked={unsureTransferClicked} privateKey={privateKey} />
                     <Notifications clicked={notificationsClicked} />
 
                 </>
