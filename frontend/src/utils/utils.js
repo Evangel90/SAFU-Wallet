@@ -1,8 +1,12 @@
 import { ethers, JsonRpcProvider } from "ethers"
+import { abi } from '../../../artifacts/contracts/UnsureTransfer.sol/UnsureTransfer.json'
 
 const provider = new JsonRpcProvider("https://eth-holesky.g.alchemy.com/v2/jieawsXv4jXd1QLvQ6R500Nty_qryZVm")
-const contractAddr = '0x6A40Efcce5f3D73c7b2Ed8F9c75a101438fa1Fa6'
-const contractName = "UnsureTransfer"
+const contractAddress = '0x6A40Efcce5f3D73c7b2Ed8F9c75a101438fa1Fa6'
+// const contractName = "UnsureTransfer"
+// const contractAbi = require('../../../artifacts/contracts/UnsureTransfer.sol/UnsureTransfer.json').abi
+
+
 
 export function generateAccount(privateKey){
     let wallet
@@ -49,12 +53,18 @@ export async function transferFunds(_privateKey, receiver, amount){
 }
 
 
-export async function unsureTransferInit(senderAccount, receiverAddress){
-    const contract = await ethers.getContractAt(contractName, contractAddr, senderAccount)
-    const transferInit = await contract.initiateUnsureTransfer(receiverAdd, {value: ethers.parseEther("1")})
-    await transferInit.wait()
+export async function unsureTransferInit(_privateKey, receiverAddress, amount){
+    const wallet = new ethers.Wallet(_privateKey, provider)
+    const signer= wallet.connect(provider)
+    const UnsureTransferContract = new ethers.Contract(contractAddress, abi, signer )
 
-    console.log('Success', confirmation)
+    const txInit = await UnsureTransferContract.initiateUnsureTransfer(
+        receiverAddress, 
+        {value: ethers.parseEther(amount)}
+    )
+    txInit.wait()
+
+    console.log('Success', txInit)
 }
 
 
