@@ -8,17 +8,18 @@ import { getAccountBalance } from '../utils/utils';
 
 function AccountDetails() {
     const location = useLocation();
-    const { account, accBalance, privateKey } = location.state || {};
+    const { account, privateKey } = location.state || {};
     const [transferClicked, setTransferClicked] = useState(false);
     const [unsureTransferClicked, setUnsureTransferClicked] = useState(false);
     const [notificationsClicked, setNotificationsClicked] = useState(false);
     const [accountBal, setAccountBal] = useState()
-    // const [click, setClick] = useState(false)
+    
     const updateBal = async () => {
         console.log('inside updateBal')
         const balance = await getAccountBalance(account.address)
         console.log(balance)
         setAccountBal(balance)
+        return balance
     }
 
     useEffect(()=>{
@@ -33,8 +34,6 @@ function AccountDetails() {
         setTransferClicked(true)
         setUnsureTransferClicked(false)
         setNotificationsClicked(false)
-        // setClick(true)
-        
         console.log(transferClicked)
     }
 
