@@ -13,6 +13,7 @@ function AccountDetails() {
     const [unsureTransferClicked, setUnsureTransferClicked] = useState(false);
     const [notificationsClicked, setNotificationsClicked] = useState(false);
     const [accountBal, setAccountBal] = useState()
+    const [unsureTF, setUnsureTF] = useState(false)
     
     const updateBal = async () => {
         console.log('inside updateBal')
@@ -70,8 +71,8 @@ function AccountDetails() {
                         <Button size='md' onClick={handleNotifications}>Notifications</Button>
                     </Stack>
                     <Transfer clicked={transferClicked} privateKey={privateKey} updateBal={updateBal} accountBal={accountBal}/>
-                    <UnsureTransfer clicked={unsureTransferClicked} privateKey={privateKey} />
-                    <Notifications clicked={notificationsClicked} />
+                    <UnsureTransfer clicked={unsureTransferClicked} privateKey={privateKey} setUnsureTF={setUnsureTF}/>
+                    <Notifications clicked={notificationsClicked} privateKey={privateKey} unsureTF={unsureTF}/>
 
                 </>
 

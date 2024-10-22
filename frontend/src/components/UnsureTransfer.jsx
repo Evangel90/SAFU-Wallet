@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Stack, Input, Button } from '@chakra-ui/react'
-import { unsureTransferInit } from '../utils/utils'
+import { unsureTransferInit, unsureTransferInitListener } from '../utils/utils'
 
-function UnsureTransfer({clicked, privateKey}){
+function UnsureTransfer({clicked, privateKey, setUnsureTF}){
     const[recipientAddress, setRecipientAddress] = useState('') 
     const[amount, setAmount] = useState('')
 
@@ -15,9 +15,10 @@ function UnsureTransfer({clicked, privateKey}){
         console.log(recipientAddress, e.target.value)
     }
 
-    const handleUnsureTransfer = () =>{
-        unsureTransferInit(privateKey, recipientAddress, amount)
-
+    const handleUnsureTransfer = async() =>{
+        await unsureTransferInit(privateKey, recipientAddress, amount)
+        setUnsureTF(true)
+        // unsureTransferInitListener(privateKey)
     }
 
 

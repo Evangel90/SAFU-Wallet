@@ -3,9 +3,6 @@ import { abi } from '../../../artifacts/contracts/UnsureTransfer.sol/UnsureTrans
 
 const provider = new JsonRpcProvider("https://eth-holesky.g.alchemy.com/v2/jieawsXv4jXd1QLvQ6R500Nty_qryZVm")
 const contractAddress = '0x6A40Efcce5f3D73c7b2Ed8F9c75a101438fa1Fa6'
-// const contractName = "UnsureTransfer"
-// const contractAbi = require('../../../artifacts/contracts/UnsureTransfer.sol/UnsureTransfer.json').abi
-
 
 
 export function generateAccount(privateKey){
@@ -40,18 +37,12 @@ export async function transferFunds(_privateKey, receiver, amount){
         }
         
         const transferFunds = await signer.sendTransaction(tx)
-        // const transferFunds = await transferingFunds
-
-        // return transferFunds
         console.log(transferFunds)
 
     }catch(err){
         console.log('Transfer err', err)
     }
-    
-
 }
-
 
 export async function unsureTransferInit(_privateKey, receiverAddress, amount){
     const wallet = new ethers.Wallet(_privateKey, provider)
@@ -67,7 +58,23 @@ export async function unsureTransferInit(_privateKey, receiverAddress, amount){
     console.log('Success', txInit)
 }
 
+export function unsureTransferInitListener(_privateKey) {
+    const wallet = new ethers.Wallet(_privateKey, provider)
+    const signer= wallet.connect(provider)
+    const UnsureTransferContract = new ethers.Contract(contractAddress, abi, signer )
 
+    console.log('Should be listening to UnsureTransferInitiated now!')
+    
+    UnsureTransferContract.on("UnsureTransferInitiated", (sender, receiver, value, event) => {
+        let txEvent = {
+            sender: sender,
+            receiver: receiver,
+            value: value, 
+            eventData: event
+        }
 
-// generateAccount('3defcecedc324b81919c2b6a12c1cd26b36df488fee1feddcb47dbea9901cde4')
+        console.log("Done listening", txEvent)
+    })
+    console.log('.....')
+}
 

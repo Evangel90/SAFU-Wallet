@@ -1,6 +1,15 @@
 import { Accordion, AccordionButton, AccordionIcon, AccordionPanel, AccordionItem, Box } from "@chakra-ui/react";
+import { unsureTransferInitListener } from "../utils/utils";
+import { useState, useEffect } from "react";
 
-function Notifications({ clicked }) {
+function Notifications({ clicked, privateKey, unsureTF }) {
+    const [uTFIL, setUTFIL] = useState(false)
+    
+    useEffect(()=>{
+        console.log('inside useEffect')
+        unsureTransferInitListener(privateKey)      
+        // setUTFIL(true)
+    }, [unsureTF])
 
     return (
         <>
