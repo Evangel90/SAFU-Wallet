@@ -71,7 +71,7 @@ function AccountDetails() {
                         <Button size='md' onClick={handleNotifications}>Notifications</Button>
                     </Stack>
                     <Transfer clicked={transferClicked} privateKey={privateKey} updateBal={updateBal} accountBal={accountBal}/>
-                    <UnsureTransfer clicked={unsureTransferClicked} privateKey={privateKey} setUnsureTF={setUnsureTF}/>
+                    <UnsureTransfer clicked={unsureTransferClicked} privateKey={privateKey} setUnsureTF={setUnsureTF} unsureTF={unsureTF}/>
                     <Notifications clicked={notificationsClicked} privateKey={privateKey} unsureTF={unsureTF}/>
 
                 </>

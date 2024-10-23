@@ -44,10 +44,18 @@ export async function transferFunds(_privateKey, receiver, amount){
     }
 }
 
-export async function unsureTransferInit(_privateKey, receiverAddress, amount){
+function getContract(_privateKey){
     const wallet = new ethers.Wallet(_privateKey, provider)
     const signer= wallet.connect(provider)
     const UnsureTransferContract = new ethers.Contract(contractAddress, abi, signer )
+    return UnsureTransferContract
+}
+
+export async function unsureTransferInit(_privateKey, receiverAddress, amount){
+    // const wallet = new ethers.Wallet(_privateKey, provider)
+    // const signer= wallet.connect(provider)
+    // const UnsureTransferContract = new ethers.Contract(contractAddress, abi, signer )
+    const UnsureTransferContract = getContract(_privateKey)
 
     const txInit = await UnsureTransferContract.initiateUnsureTransfer(
         receiverAddress, 
@@ -59,9 +67,10 @@ export async function unsureTransferInit(_privateKey, receiverAddress, amount){
 }
 
 export function unsureTransferInitListener(_privateKey) {
-    const wallet = new ethers.Wallet(_privateKey, provider)
-    const signer= wallet.connect(provider)
-    const UnsureTransferContract = new ethers.Contract(contractAddress, abi, signer )
+    // const wallet = new ethers.Wallet(_privateKey, provider)
+    // const signer= wallet.connect(provider)
+    // const UnsureTransferContract = new ethers.Contract(contractAddress, abi, signer)
+    const UnsureTransferContract = getContract(_privateKey)
 
     console.log('Should be listening to UnsureTransferInitiated now!')
     
@@ -74,7 +83,17 @@ export function unsureTransferInitListener(_privateKey) {
         }
 
         console.log("Done listening", txEvent)
+        return txEvent
     })
     console.log('.....')
+}
+
+export async function cancelUnsureTransfer(_privateKey){
+    const UnsureTransferContract = getContract(_privateKey)
+
+    const cancelTx = await UnsureTransferContract.cancelTransaction()
+    cancelTx.wait()
+
+    console.log('Canceled', cancelTx)
 }
 

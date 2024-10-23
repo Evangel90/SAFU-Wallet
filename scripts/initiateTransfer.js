@@ -16,7 +16,7 @@ const initiateTransfer = async () => {
         console.log(`Transfer initiated from ${sender} to ${receiver} with value ${value}`)
     })
 
-    const transferInit = await contract.initiateUnsureTransfer(receiverAdd, {value: ethers.parseEther("1")})
+    const transferInit = await contract.initiateUnsureTransfer(receiverAdd, {value: ethers.parseEther("3")})
     await transferInit.wait()
 
     console.log(`Transfer initiated successfully`)
