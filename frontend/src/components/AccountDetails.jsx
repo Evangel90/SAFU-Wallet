@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Heading, Button, Stack , Container, Box} from '@chakra-ui/react';
+import { Heading, Button, Stack , Container, Box, Tooltip, IconButton} from '@chakra-ui/react';
+import { CopyIcon } from '@chakra-ui/icons';
 import Transfer from './Transfer';
 import UnsureTransfer from './UnsureTransfer';
 import Notifications from './Notifications';
@@ -55,7 +56,12 @@ function AccountDetails() {
     const truncateAddress = (address) => {
         if (!address) return '';
         return `${address.slice(0, 6)}....${address.slice(-4)}`;
-    };
+    }
+
+    const copyToClipboard = (address) => {
+        navigator.clipboard.writeText(address);
+        alert('Address copied to clipboard');
+    }
 
     return (
         <>
@@ -68,6 +74,14 @@ function AccountDetails() {
                         <>
                             <Heading size='md' fontSize='1.2rem'>
                                 {truncateAddress(account.address)}
+                                <Tooltip label="Copy Address" aria-label="Copy Address">
+                                    <IconButton
+                                        icon={<CopyIcon />}
+                                        size="sm"
+                                        ml={2}
+                                        onClick={() => copyToClipboard(account.address)}
+                                    />
+                                </Tooltip>
                             </Heading>
                             <Heading size='md' fontSize='3rem' fontWeight='normal'>
                                 {parseFloat(accountBal) === 0 ? '0.0' : parseFloat(accountBal).toFixed(4)} ETH
