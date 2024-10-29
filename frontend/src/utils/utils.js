@@ -23,7 +23,16 @@ export function generateAccount(privateKey){
 
 export async function getAccountBalance(address){
     const balance = await provider.getBalance(address)
+    console.log('balance', balance)
     return ethers.formatEther(balance)
+}
+
+export async function balanceUpdater(address) {
+    provider.on('block', async (blockNumber) => {
+        console.log("New block:", blockNumber);
+        await getAccountBalance(address)
+    })
+    
 }
 
 export async function transferFunds(_privateKey, receiver, amount){

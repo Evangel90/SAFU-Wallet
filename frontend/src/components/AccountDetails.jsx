@@ -5,7 +5,7 @@ import { CopyIcon } from '@chakra-ui/icons';
 import Transfer from './Transfer';
 import UnsureTransfer from './UnsureTransfer';
 import Notifications from './Notifications';
-import { getAccountBalance } from '../utils/utils';
+import { ethers, JsonRpcProvider } from "ethers"
 
 function AccountDetails() {
     const location = useLocation();
@@ -15,20 +15,24 @@ function AccountDetails() {
     const [notificationsClicked, setNotificationsClicked] = useState(false);
     const [accountBal, setAccountBal] = useState()
     const [unsureTF, setUnsureTF] = useState(false)
+    const [copied, setCopied] = useState(false)
+
+    const provider = new JsonRpcProvider("https://eth-holesky.g.alchemy.com/v2/jieawsXv4jXd1QLvQ6R500Nty_qryZVm")
 
     const updateBal = async () => {
         console.log('inside updateBal')
-        const balance = await getAccountBalance(account.address)
-        console.log(balance)
-        setAccountBal(balance)
-        return balance
+        const balance = await provider.getBalance(account.address)
+        console.log('updateBal', balance)
+        setAccountBal(ethers.formatEther(balance))
     }
 
     useEffect(() => {
+        updateBal(account.address)
         console.log('useEffect working');
-        (async () => {
-            await updateBal()
-        })()
+        provider.on('block', async (blockNumber) => {
+            console.log("New block:", blockNumber);
+            await updateBal(account.address)
+        })
     }, [])
 
 
@@ -60,7 +64,8 @@ function AccountDetails() {
 
     const copyToClipboard = (address) => {
         navigator.clipboard.writeText(address);
-        alert('Address copied to clipboard');
+        setCopied(true);
+        setTimeout(() => setCopied(false), 10000)
     }
 
     return (
@@ -74,7 +79,7 @@ function AccountDetails() {
                         <>
                             <Heading size='md' fontSize='1.2rem'>
                                 {truncateAddress(account.address)}
-                                <Tooltip label="Copy Address" aria-label="Copy Address">
+                                <Tooltip label={copied ? "Copied" : "Copy Address"} aria-label="Copy Address">
                                     <IconButton
                                         icon={<CopyIcon />}
                                         size="sm"

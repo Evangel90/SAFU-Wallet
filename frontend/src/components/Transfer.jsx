@@ -1,20 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Stack, Input, Button } from '@chakra-ui/react'
 import { transferFunds } from '../utils/utils'
 
-function Transfer({ clicked, privateKey, updateBal, accountBal }) {
+function Transfer({ clicked, privateKey }) {
     const[recipientAddress, setRecipientAddress] = useState('') 
     const[amount, setAmount] = useState('')
-    let balanceTimerRef = useRef(null)
-    
-    useEffect(()=>{
-        console.log('useEffect', accountBal)
-        return () => {
-            if(balanceTimerRef.current){
-                clearInterval(balanceTimerRef.current)
-            } 
-        }
-    }, [accountBal])
     
     const handleAddressInput = (e) => {
         setRecipientAddress(e.target.value)
@@ -27,16 +17,6 @@ function Transfer({ clicked, privateKey, updateBal, accountBal }) {
 
     const handleTransfer = async() => {
         await transferFunds(privateKey, recipientAddress, amount)
-        const prevBal = accountBal
-
-        balanceTimerRef.current = setInterval(async()=> {
-            const newBal = await updateBal()
-            console.log('balance', prevBal, newBal)
-            if(prevBal !== newBal){
-                console.log('account updated. clearing timer')
-                clearInterval(balanceTimerRef.current)
-            }
-        }, 5000)
     }
 
     return (
