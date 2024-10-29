@@ -5,7 +5,7 @@ import { unsureTransferInit, unsureTransferInitListener, cancelUnsureTransfer } 
 function UnsureTransfer({ clicked, privateKey, setUnsureTF, unsureTF }) {
     const [recipientAddress, setRecipientAddress] = useState('')
     const [amount, setAmount] = useState('')
-    const [eventData, setEventData] = useState()
+    const [eventData, setEventData] = useState({})
 
     useEffect(() => {
         // console.log('inside useEffect')
@@ -37,10 +37,10 @@ function UnsureTransfer({ clicked, privateKey, setUnsureTF, unsureTF }) {
     return (
         <>
             {clicked && (
-                <Stack spacing={4} direction='row' align='center'>
+                <Stack mt='2rem' spacing={4} align='center'>
                     <Input placeholder='Enter Recipient Address' onChange={handleAddressInput} />
-                    <Input placeholder='Enter Amount' onChange={handleAmountInput} />
-                    <Button colorScheme='teal' onClick={handleUnsureTransfer}>Unsure Tf</Button>
+                    <Input placeholder='Enter Amount in ETH' onChange={handleAmountInput} />
+                    <Button colorScheme='teal' size='lg' onClick={handleUnsureTransfer}>Initiate Unsure Transfer</Button>
                 </Stack>
             )}
             {unsureTF && (

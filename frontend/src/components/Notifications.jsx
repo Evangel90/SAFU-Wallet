@@ -14,12 +14,12 @@ function Notifications({ clicked, privateKey, unsureTF }) {
     return (
         <>
             {clicked && (
-                <Accordion allowToggle>
+                <Accordion mt='2rem' allowToggle>
                     <AccordionItem>
                         <h2>
                             <AccordionButton>
                                 <Box as='span' flex='1' textAlign='left'>
-                                    Section 1 title
+                                    Unsure Transfer Initiated
                                 </Box>
                                 <AccordionIcon />
                             </AccordionButton>

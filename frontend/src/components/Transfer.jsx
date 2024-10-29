@@ -42,9 +42,9 @@ function Transfer({ clicked, privateKey, updateBal, accountBal }) {
     return (
         <>
             {clicked && (
-                <Stack spacing={4} direction='row' align='center'>
+                <Stack mt='2rem' spacing={4} align='center'>
                     <Input placeholder='Enter Recipient Address' onChange={handleAddressInput} />
-                    <Input placeholder='Enter Amount in Eth' onChange={handleAmountInput}/>
+                    <Input placeholder='Enter Amount in ETH' onChange={handleAmountInput}/>
                     <Button colorScheme='teal' size='lg' onClick={handleTransfer}>Transfer</Button>
                 </Stack>
             )}
