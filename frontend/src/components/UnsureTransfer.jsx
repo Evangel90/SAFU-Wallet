@@ -5,14 +5,14 @@ import { unsureTransferInit, unsureTransferInitListener, cancelUnsureTransfer } 
 function UnsureTransfer({ clicked, privateKey, setUnsureTF, unsureTF }) {
     const [recipientAddress, setRecipientAddress] = useState('')
     const [amount, setAmount] = useState('')
-    const [eventData, setEventData] = useState({})
+    // const [eventData, setEventData] = useState({})
 
-    useEffect(() => {
-        // console.log('inside useEffect')
-        const payload = unsureTransferInitListener(privateKey)
-        setEventData(payload)
+    // useEffect(() => {
+    //     console.log('inside useEffect')
+    //     const payload = unsureTransferInitListener(privateKey)
+    //     setEventData(payload)
 
-    }, [unsureTF])
+    // }, [unsureTF])
 
     const handleAddressInput = (e) => {
         setRecipientAddress(e.target.value)
@@ -29,9 +29,9 @@ function UnsureTransfer({ clicked, privateKey, setUnsureTF, unsureTF }) {
         // unsureTransferInitListener(privateKey)
     }
 
-    const handleCancelTransfer = () =>{
-        cancelUnsureTransfer(privateKey)
-    }
+    // const handleCancelTransfer = () =>{
+    //     cancelUnsureTransfer(privateKey)
+    // }
 
 
     return (
@@ -43,7 +43,7 @@ function UnsureTransfer({ clicked, privateKey, setUnsureTF, unsureTF }) {
                     <Button colorScheme='teal' size='lg' onClick={handleUnsureTransfer}>Initiate Unsure Transfer</Button>
                 </Stack>
             )}
-            {unsureTF && (
+            {/* {unsureTF && (
                 <Accordion allowToggle>
                     <AccordionItem>
                         <h2>
@@ -60,7 +60,7 @@ function UnsureTransfer({ clicked, privateKey, setUnsureTF, unsureTF }) {
                         </AccordionPanel>
                     </AccordionItem>
                 </Accordion>
-            )}
+            )} */}
         </>
     )
 }

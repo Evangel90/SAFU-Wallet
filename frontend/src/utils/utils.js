@@ -53,7 +53,7 @@ export async function transferFunds(_privateKey, receiver, amount){
     }
 }
 
-function getContract(_privateKey){
+export function getContract(_privateKey){
     const wallet = new ethers.Wallet(_privateKey, provider)
     const signer= wallet.connect(provider)
     const UnsureTransferContract = new ethers.Contract(contractAddress, abi, signer )
@@ -87,7 +87,7 @@ export function unsureTransferInitListener(_privateKey) {
         let txEvent = {
             sender: sender,
             receiver: receiver,
-            value: value, 
+            value: value,
             eventData: event
         }
 
