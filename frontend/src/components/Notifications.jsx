@@ -1,5 +1,5 @@
 import { Accordion, AccordionButton, AccordionIcon, AccordionPanel, AccordionItem, Box, Button, InputGroup, Input, InputRightElement } from "@chakra-ui/react";
-import { unsureTransferInitListener, getContract } from "../utils/utils";
+import { replyUnsureTransfer, getContract, cancelUnsureTransfer } from "../utils/utils";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers"
 
@@ -7,15 +7,12 @@ function Notifications({ clicked, privateKey, unsureTF, account }) {
     const [txData, setTxData] = useState({})
     const [itSender, setItSender] = useState()
     const [itReceiver, setItReceiver] = useState()
+    const [confirmationString, setConfirmationString] = useState()
+    const [stringProvided, setStringProvided] = useState()
 
     useEffect(() => {
         console.log('inside useEffect')
-        // unsureTransferInitListener(privateKey)
-        // setUTFIL(true)
-
         const UnsureTransferContract = getContract(privateKey)
-
-        // console.log('Should be listening to UnsureTransferInitiated now!')
 
         UnsureTransferContract.on("UnsureTransferInitiated", (sender, receiver, value, event) => {
             let txEvent = {
@@ -35,13 +32,31 @@ function Notifications({ clicked, privateKey, unsureTF, account }) {
             }
             setTxData(txEvent)
         })
+
+        UnsureTransferContract.on("ConfirmationStringProvided", (sender, event) => {
+            setStringProvided(true)
+            console.log('Confirmation String Provided', sender, event)
+        })
     }, [unsureTF])
+
+    const handleStringInput = (e) => {
+        setConfirmationString(e.target.value)
+    }
+
+    const handleReply = async() => {
+        console.log('...replying')
+        await replyUnsureTransfer(privateKey, confirmationString)
+    }
+
+    const handleCancel = async() => {
+        await cancelUnsureTransfer(privateKey)
+    }
 
     return (
         <>
             {clicked && (
                 <Accordion mt='2rem' allowToggle>
-                    <AccordionItem>
+                    <AccordionItem textAlign='left'>
                         <h2>
                             <AccordionButton>
                                 <Box as='span' flex='1' textAlign='left'>
@@ -54,11 +69,9 @@ function Notifications({ clicked, privateKey, unsureTF, account }) {
                             <>
                                 <AccordionPanel pb={4}>
                                     {`You have successfully initiated an 'Unsure Transfer' of ${ethers.formatEther(txData.value)} Eth to ${txData.receiver}`}
-                                    <Button colorScheme='red'>Cancel Unsure Transfer</Button>
+                                    <Button colorScheme='red' onClick={handleCancel}>Cancel Unsure Transfer</Button>
                                 </AccordionPanel>
                             </>
-
-
                         )}
                         {itReceiver && (
                             <AccordionPanel pb={4}>
@@ -68,12 +81,23 @@ function Notifications({ clicked, privateKey, unsureTF, account }) {
                                         pr='4.5rem'
                                         type={'text'}
                                         placeholder='Enter Confirmation String'
+                                        onChange={handleStringInput}
                                     />
+                                    <div>{`The value of the string is ${confirmationString}`}</div>
                                     <InputRightElement width='4.5rem'>
-                                        <Button h='1.75rem' size='sm'>
-                                        </Button>
+                                        <Button h='1.75rem' size='sm' colorScheme="green" onClick={handleReply}>Reply</Button>
                                     </InputRightElement>
                                 </InputGroup>
+                            </AccordionPanel>
+                        )}
+                        {stringProvided && itReceiver && (
+                            <AccordionPanel pb={4}>
+                                {`You have successfully provided a confirmation string of '${confirmationString}'`}
+                            </AccordionPanel>
+                        )}
+                        {stringProvided && itSender && (
+                            <AccordionPanel pb={4}>
+                                {`The confirmation string of value '${confirmationString}' has been provided by the receiver`}
                             </AccordionPanel>
                         )}
                     </AccordionItem>

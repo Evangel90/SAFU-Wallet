@@ -61,9 +61,6 @@ export function getContract(_privateKey){
 }
 
 export async function unsureTransferInit(_privateKey, receiverAddress, amount){
-    // const wallet = new ethers.Wallet(_privateKey, provider)
-    // const signer= wallet.connect(provider)
-    // const UnsureTransferContract = new ethers.Contract(contractAddress, abi, signer )
     const UnsureTransferContract = getContract(_privateKey)
 
     const txInit = await UnsureTransferContract.initiateUnsureTransfer(
@@ -106,3 +103,11 @@ export async function cancelUnsureTransfer(_privateKey){
     console.log('Canceled', cancelTx)
 }
 
+export async function replyUnsureTransfer(_privateKey, confirmationString){
+    const UnsureTransferContract = getContract(_privateKey)
+
+    const stringProviderTx = await UnsureTransferContract.confirmationStringProvider(confirmationString)
+    stringProviderTx.wait()
+
+    console.log('Success', stringProviderTx)
+}
