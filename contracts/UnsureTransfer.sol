@@ -19,7 +19,7 @@ contract UnsureTransfer {
     address payable receiver;
 
     event UnsureTransferInitiated(address sender, address receiver, uint amount);
-    event ConfirmationStringProvided(address receiver);
+    event ConfirmationStringProvided(address receiver, string confirmationString);
     event TransferConfirmed(address sender, address receiver, uint amount);
     event TransferCancelled(address sender, address receiver, uint amount);
 
@@ -49,7 +49,7 @@ contract UnsureTransfer {
         initialTransaction.confirmationString = _confirmationString;
         initialTransaction.confirmedByReceiver = true;
 
-        emit ConfirmationStringProvided(msg.sender);
+        emit ConfirmationStringProvided(msg.sender, _confirmationString);
     }
 
     function confirmTransfer() external{

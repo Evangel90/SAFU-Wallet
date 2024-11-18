@@ -2,7 +2,7 @@ import { ethers, JsonRpcProvider } from "ethers"
 import { abi } from '../../../artifacts/contracts/UnsureTransfer.sol/UnsureTransfer.json'
 
 const provider = new JsonRpcProvider("https://eth-holesky.g.alchemy.com/v2/jieawsXv4jXd1QLvQ6R500Nty_qryZVm")
-const contractAddress = '0x6A40Efcce5f3D73c7b2Ed8F9c75a101438fa1Fa6'
+const contractAddress = '0x604eb0789e15bfa610555Db3bb41B1C057c1fb4A'
 
 
 export function generateAccount(privateKey){
@@ -110,4 +110,13 @@ export async function replyUnsureTransfer(_privateKey, confirmationString){
     stringProviderTx.wait()
 
     console.log('Success', stringProviderTx)
+}
+
+export async function confirmUnsureTransfer(_privateKey) {
+    const UnsureTransferContract = getContract(_privateKey)
+    
+    const confirmTx = await UnsureTransferContract.confirmTransfer()
+    await confirmTx.wait()
+    
+    console.log('Transaction confirmed', confirmTx)
 }
