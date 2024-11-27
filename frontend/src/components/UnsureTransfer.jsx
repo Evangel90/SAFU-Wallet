@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Stack, Input, Button, Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Box } from '@chakra-ui/react'
 import { unsureTransferInit, unsureTransferInitListener, cancelUnsureTransfer } from '../utils/utils'
 
-function UnsureTransfer({ clicked, privateKey, setUnsureTF, unsureTF }) {
+function UnsureTransfer({ clicked, privateKey, setUnsureTF }) {
     const [recipientAddress, setRecipientAddress] = useState('')
     const [amount, setAmount] = useState('')
     // const [eventData, setEventData] = useState({})
@@ -25,7 +25,7 @@ function UnsureTransfer({ clicked, privateKey, setUnsureTF, unsureTF }) {
 
     const handleUnsureTransfer = async () => {
         await unsureTransferInit(privateKey, recipientAddress, amount)
-        setUnsureTF(true)
+        setUnsureTF(`Unsure transfer of ${amount}Eth has been initiated`)
         // unsureTransferInitListener(privateKey)
     }
 

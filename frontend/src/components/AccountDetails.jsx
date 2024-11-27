@@ -14,7 +14,7 @@ function AccountDetails() {
     const [unsureTransferClicked, setUnsureTransferClicked] = useState(false);
     const [notificationsClicked, setNotificationsClicked] = useState(false);
     const [accountBal, setAccountBal] = useState()
-    const [unsureTF, setUnsureTF] = useState(false)
+    const [unsureTF, setUnsureTF] = useState() //TODO:set state to timestamp, so as to have a constantly changing state for useEffect in Notifications
     const [copied, setCopied] = useState(false)
 
     const provider = new JsonRpcProvider("https://eth-holesky.g.alchemy.com/v2/jieawsXv4jXd1QLvQ6R500Nty_qryZVm")
@@ -98,7 +98,7 @@ function AccountDetails() {
                             </Stack>
                             <Transfer clicked={transferClicked} privateKey={privateKey} updateBal={updateBal} accountBal={accountBal} />
                             <UnsureTransfer clicked={unsureTransferClicked} privateKey={privateKey} setUnsureTF={setUnsureTF} />
-                            <Notifications clicked={notificationsClicked} privateKey={privateKey} unsureTF={unsureTF} account={account}/>
+                            <Notifications clicked={notificationsClicked} privateKey={privateKey} account={account} unsureTF={unsureTF}/>
 
                         </>
 
