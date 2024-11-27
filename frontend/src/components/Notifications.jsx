@@ -10,6 +10,7 @@ function Notifications({ clicked, privateKey, account, unsureTF }) {
     const [confirmationString, setConfirmationString] = useState()
     const [stringProvided, setStringProvided] = useState()
     const [txEnd, setTxEnd] = useState()
+    const [eventString, setEventString] = useState()
 
     const UnsureTransferContract = getContract(privateKey)
 
@@ -38,19 +39,23 @@ function Notifications({ clicked, privateKey, account, unsureTF }) {
             setStringProvided(true)
             setConfirmationString(confirmedString)
             setTxEnd(false)
-            console.log('Confirmation String Provided', sender, confirmedString)
+            // console.log('Confirmation String Provided', sender, confirmedString)
         })
         //TODO: Stop listening to ConfirmationStringProvided event
 
         UnsureTransferContract.on("TransferConfirmed", (sender, receiver, amount, event) =>{
-            // setStringProvided(false)
+            setStringProvided(false)
             setTxEnd(true)
+            setItReceiver(false)
+            setItSender(false)
         })
 
 
         UnsureTransferContract.on("TransferCancelled", (sender, receiver, amoutToRefund, event) =>{
-            // setStringProvided(false)
+            setStringProvided(false)
             setTxEnd(true)
+            setItReceiver(false)
+            setItSender(false)
         })
         // return () => { //remove this block of code if TODOs above are implemented
         //     UnsureTransferContract.removeAllListeners()
@@ -137,6 +142,7 @@ function Notifications({ clicked, privateKey, account, unsureTF }) {
                             <AccordionPanel pb={4}>
                                 <Stack spacing={4}>
                                     <Text>{`Incoming 'Unsure Transfer' of ${txData.value ? ethers.formatEther(txData.value) : '0'} ETH from ${txData.sender}`}</Text>
+                                    {console.log(stringProvided)}
                                     {(!stringProvided && !txEnd) && (
                                         <InputGroup size='md'>
                                             <Input
@@ -152,9 +158,9 @@ function Notifications({ clicked, privateKey, account, unsureTF }) {
                                             </InputRightElement>
                                         </InputGroup>
                                     )}
-                                    {(stringProvided && txEnd) && (
+                                    {/* {(stringProvided && !txEnd) && (
                                         <Text color='green.500'>{`Confirmation string provided: ${confirmationString}`}</Text>
-                                    )}
+                                    )} */}
                                 </Stack>
                             </AccordionPanel>
                         )}
