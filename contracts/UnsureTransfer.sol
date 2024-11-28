@@ -18,10 +18,10 @@ contract UnsureTransfer {
 
     address payable receiver;
 
-    event UnsureTransferInitiated(address indexed sender, address indexed receiver, uint indexed amount);
-    event ConfirmationStringProvided(address indexed receiver, string indexed confirmationString);
-    event TransferConfirmed(address indexed sender, address indexed receiver, uint indexed amount);
-    event TransferCancelled(address indexed sender, address indexed receiver, uint indexed amount);
+    event UnsureTransferInitiated(address sender, address receiver, uint amount);
+    event ConfirmationStringProvided(address receiver, string confirmationString);
+    event TransferConfirmed(address sender, address receiver, uint amount);
+    event TransferCancelled(address sender, address receiver, uint amount);
 
     function initiateUnsureTransfer(address payable _receiver) external payable {
         require(msg.value > 0, "Amount must be greater than 0");

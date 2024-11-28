@@ -13,6 +13,7 @@ function Notifications({ clicked, privateKey, account, unsureTF }) {
     const [eventString, setEventString] = useState()
 
     const UnsureTransferContract = getContract(privateKey)
+    const eventFilter = 
 
     useEffect(() => {
         console.log('inside useEffect - notifications')
@@ -60,7 +61,7 @@ function Notifications({ clicked, privateKey, account, unsureTF }) {
         // return () => { //remove this block of code if TODOs above are implemented
         //     UnsureTransferContract.removeAllListeners()
         // }
-    }, [unsureTF, confirmationString, txData, account.address, txEnd]) //unsureTF state might not change
+    }, []) //unsureTF state might not change
 
     const handleStringInput = (e) => {
         setConfirmationString(e.target.value)

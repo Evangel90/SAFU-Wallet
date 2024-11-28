@@ -2,7 +2,7 @@ import { ethers, JsonRpcProvider } from "ethers"
 import { abi } from '../../../artifacts/contracts/UnsureTransfer.sol/UnsureTransfer.json'
 
 const provider = new JsonRpcProvider("https://eth-holesky.g.alchemy.com/v2/jieawsXv4jXd1QLvQ6R500Nty_qryZVm")
-const contractAddress = '0x28463412ea9d8832ea38559299cA2439fCbfE491'
+const contractAddress = '0x812929caA68A232c41cEda96e74f27B3DA239881'
 
 
 export function generateAccount(privateKey){
