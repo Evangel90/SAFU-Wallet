@@ -98,7 +98,7 @@ function AccountDetails() {
                             </Stack>
                             <Transfer clicked={transferClicked} privateKey={privateKey} updateBal={updateBal} accountBal={accountBal} />
                             <UnsureTransfer clicked={unsureTransferClicked} privateKey={privateKey} setUnsureTF={setUnsureTF} />
-                            <Notifications clicked={notificationsClicked} privateKey={privateKey} account={account} unsureTF={unsureTF}/>
+                            <Notifications clicked={notificationsClicked} setClicked={setNotificationsClicked} privateKey={privateKey} account={account} unsureTF={unsureTF}/>
 
                         </>
 
