@@ -3,22 +3,22 @@ import { replyUnsureTransfer, getContract, cancelUnsureTransfer, confirmUnsureTr
 import { useState, useEffect } from "react";
 import { ethers } from "ethers"
 
-function Notifications({ clicked, privateKey, account, unsureTF }) {
+function Notifications({ clicked, setClicked, privateKey, account, unsureTF }) {
     const [txData, setTxData] = useState({})
     const [itSender, setItSender] = useState()
     const [itReceiver, setItReceiver] = useState()
     const [confirmationString, setConfirmationString] = useState()
     const [stringProvided, setStringProvided] = useState()
     const [txEnd, setTxEnd] = useState()
-    const [eventString, setEventString] = useState()
 
     const UnsureTransferContract = getContract(privateKey)
-    const eventFilter = 
 
     useEffect(() => {
         console.log('inside useEffect - notifications')
 
         UnsureTransferContract.on("UnsureTransferInitiated", (sender, receiver, value, event) => {
+            setTxEnd(false)
+            setStringProvided(false)
             let txEvent = {
                 sender: sender,
                 receiver: receiver,
@@ -32,36 +32,37 @@ function Notifications({ clicked, privateKey, account, unsureTF }) {
                 setItReceiver(true)
             }
             setTxData(txEvent)
-            setTxEnd(false)
         }) 
-        //TODO: Stop listening to UnsureTransferInitiated event
+        // UnsureTransferContract.off("UnsureTransferInitiated")
 
         UnsureTransferContract.on("ConfirmationStringProvided", (sender, confirmedString, event) => {
             setStringProvided(true)
             setConfirmationString(confirmedString)
             setTxEnd(false)
-            // console.log('Confirmation String Provided', sender, confirmedString)
         })
-        //TODO: Stop listening to ConfirmationStringProvided event
+        // UnsureTransferContract.off("ConfirmationStringProvided")
 
         UnsureTransferContract.on("TransferConfirmed", (sender, receiver, amount, event) =>{
             setStringProvided(false)
             setTxEnd(true)
             setItReceiver(false)
             setItSender(false)
+            setClicked(false)
         })
-
+        // UnsureTransferContract.off("TransferConfirmed")
 
         UnsureTransferContract.on("TransferCancelled", (sender, receiver, amoutToRefund, event) =>{
             setStringProvided(false)
             setTxEnd(true)
             setItReceiver(false)
             setItSender(false)
+            setClicked(false)
         })
-        // return () => { //remove this block of code if TODOs above are implemented
-        //     UnsureTransferContract.removeAllListeners()
-        // }
-    }, []) //unsureTF state might not change
+        // UnsureTransferContract.off("TransferCancelled")
+        return () => {
+            UnsureTransferContract.removeAllListeners()
+        }
+    }, []) 
 
     const handleStringInput = (e) => {
         setConfirmationString(e.target.value)
@@ -131,10 +132,12 @@ function Notifications({ clicked, privateKey, account, unsureTF }) {
                                                 </Button>
                                             </ButtonGroup>
                                         </>
-                                    ) : (
-                                        <Button colorScheme='red' onClick={handleCancel}>
-                                            Cancel Transfer
-                                        </Button>
+                                    ) : ( 
+                                        ({txEnd}&& //little tricky here, but it works
+                                            <Button colorScheme='red' onClick={handleCancel}>
+                                                Cancel Transfer
+                                            </Button>
+                                        )   
                                     )}
                                 </Stack>
                             </AccordionPanel>
@@ -159,9 +162,6 @@ function Notifications({ clicked, privateKey, account, unsureTF }) {
                                             </InputRightElement>
                                         </InputGroup>
                                     )}
-                                    {/* {(stringProvided && !txEnd) && (
-                                        <Text color='green.500'>{`Confirmation string provided: ${confirmationString}`}</Text>
-                                    )} */}
                                 </Stack>
                             </AccordionPanel>
                         )}
