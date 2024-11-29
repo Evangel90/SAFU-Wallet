@@ -3,7 +3,7 @@ import { replyUnsureTransfer, getContract, cancelUnsureTransfer, confirmUnsureTr
 import { useState, useEffect } from "react";
 import { ethers } from "ethers"
 
-function Notifications({ clicked, setClicked, privateKey, account, unsureTF }) {
+function Notifications({ clicked, setClicked, privateKey, account }) {
     const [txData, setTxData] = useState({})
     const [itSender, setItSender] = useState()
     const [itReceiver, setItReceiver] = useState()
@@ -32,7 +32,7 @@ function Notifications({ clicked, setClicked, privateKey, account, unsureTF }) {
                 setItReceiver(true)
             }
             setTxData(txEvent)
-        }) 
+        })
         // UnsureTransferContract.off("UnsureTransferInitiated")
 
         UnsureTransferContract.on("ConfirmationStringProvided", (sender, confirmedString, event) => {
@@ -42,7 +42,7 @@ function Notifications({ clicked, setClicked, privateKey, account, unsureTF }) {
         })
         // UnsureTransferContract.off("ConfirmationStringProvided")
 
-        UnsureTransferContract.on("TransferConfirmed", (sender, receiver, amount, event) =>{
+        UnsureTransferContract.on("TransferConfirmed", (sender, receiver, amount, event) => {
             setStringProvided(false)
             setTxEnd(true)
             setItReceiver(false)
@@ -51,7 +51,7 @@ function Notifications({ clicked, setClicked, privateKey, account, unsureTF }) {
         })
         // UnsureTransferContract.off("TransferConfirmed")
 
-        UnsureTransferContract.on("TransferCancelled", (sender, receiver, amoutToRefund, event) =>{
+        UnsureTransferContract.on("TransferCancelled", (sender, receiver, amoutToRefund, event) => {
             setStringProvided(false)
             setTxEnd(true)
             setItReceiver(false)
@@ -62,7 +62,7 @@ function Notifications({ clicked, setClicked, privateKey, account, unsureTF }) {
         return () => {
             UnsureTransferContract.removeAllListeners()
         }
-    }, []) 
+    }, [])
 
     const handleStringInput = (e) => {
         setConfirmationString(e.target.value)
@@ -132,13 +132,12 @@ function Notifications({ clicked, setClicked, privateKey, account, unsureTF }) {
                                                 </Button>
                                             </ButtonGroup>
                                         </>
-                                    ) : ( 
-                                        ({txEnd}&& //little tricky here, but it works
+                                    ) : !txEnd && (
                                             <Button colorScheme='red' onClick={handleCancel}>
                                                 Cancel Transfer
                                             </Button>
-                                        )   
-                                    )}
+                                        )
+                                    }
                                 </Stack>
                             </AccordionPanel>
                         )}
