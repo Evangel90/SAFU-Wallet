@@ -105,6 +105,9 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
 
     return (
         <>
+            {clicked && !txData.value && (
+                <p>Notifications will show here</p>
+            )}
             {clicked && (txData.value || itSender || itReceiver) && (
                 <Accordion mt='2rem' allowToggle defaultIndex={[0]}>
                     <AccordionItem textAlign='left'>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Heading, Button, Stack , Container, Box, Tooltip, IconButton} from '@chakra-ui/react';
-import { CopyIcon } from '@chakra-ui/icons';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Heading, Button, Stack, Container, Box, Tooltip, IconButton } from '@chakra-ui/react';
+import { CopyIcon, ArrowBackIcon } from '@chakra-ui/icons';
 import Transfer from './Transfer';
 import UnsureTransfer from './UnsureTransfer';
 import Notifications from './Notifications';
@@ -9,6 +9,7 @@ import { ethers, JsonRpcProvider } from "ethers"
 
 function AccountDetails() {
     const location = useLocation();
+    const navigate = useNavigate();
     const { account, privateKey } = location.state || {};
     const [transferClicked, setTransferClicked] = useState(false);
     const [unsureTransferClicked, setUnsureTransferClicked] = useState(false);
@@ -68,10 +69,30 @@ function AccountDetails() {
         setTimeout(() => setCopied(false), 10000)
     }
 
+    const handleBackClick = () => {
+        if(transferClicked || unsureTransferClicked || notificationsClicked) {
+            setTransferClicked(false);
+            setUnsureTransferClicked(false);
+            setNotificationsClicked(false);
+            return
+        }else{
+            navigate('/');
+        }
+    };
+
     return (
         <>
             <Container maxW='container.md' mt={4} centerContent>
                 <Box borderWidth='1px' maxW='30rem' borderRadius='lg' overflow='hidden' p='2rem' align='center'>
+                    <Box position="relative" width="100%">
+                        <IconButton
+                            icon={<ArrowBackIcon />}
+                            size="md"
+                            onClick={handleBackClick}
+                            position="absolute"
+                            left="0rem"
+                        />
+                    </Box>
                     <Heading size='lg' fontSize='2rem' mb='1rem'>
                         Account Details
                     </Heading>
@@ -98,7 +119,7 @@ function AccountDetails() {
                             </Stack>
                             <Transfer clicked={transferClicked} privateKey={privateKey} updateBal={updateBal} accountBal={accountBal} />
                             <UnsureTransfer clicked={unsureTransferClicked} privateKey={privateKey} setUnsureTF={setUnsureTF} />
-                            <Notifications clicked={notificationsClicked} setClicked={setNotificationsClicked} privateKey={privateKey} account={account} unsureTF={unsureTF}/>
+                            <Notifications clicked={notificationsClicked} setClicked={setNotificationsClicked} privateKey={privateKey} account={account} unsureTF={unsureTF} />
 
                         </>
 
