@@ -15,7 +15,6 @@ function AccountDetails() {
     const [unsureTransferClicked, setUnsureTransferClicked] = useState(false);
     const [notificationsClicked, setNotificationsClicked] = useState(false);
     const [accountBal, setAccountBal] = useState()
-    const [unsureTF, setUnsureTF] = useState() //TODO:set state to timestamp, so as to have a constantly changing state for useEffect in Notifications
     const [copied, setCopied] = useState(false)
 
     const provider = new JsonRpcProvider("https://eth-holesky.g.alchemy.com/v2/jieawsXv4jXd1QLvQ6R500Nty_qryZVm")
@@ -118,8 +117,8 @@ function AccountDetails() {
                                 <Button size='md' onClick={handleNotifications}>Notifications</Button>
                             </Stack>
                             <Transfer clicked={transferClicked} privateKey={privateKey} updateBal={updateBal} accountBal={accountBal} />
-                            <UnsureTransfer clicked={unsureTransferClicked} privateKey={privateKey} setUnsureTF={setUnsureTF} />
-                            <Notifications clicked={notificationsClicked} setClicked={setNotificationsClicked} privateKey={privateKey} account={account} unsureTF={unsureTF} />
+                            <UnsureTransfer clicked={unsureTransferClicked} privateKey={privateKey} />
+                            <Notifications clicked={notificationsClicked} setClicked={setNotificationsClicked} privateKey={privateKey} account={account} />
 
                         </>
 

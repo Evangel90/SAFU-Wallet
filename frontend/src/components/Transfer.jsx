@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Stack, Input, Button } from '@chakra-ui/react'
+import { Stack, Input, Button, Spinner } from '@chakra-ui/react'
 import { transferFunds } from '../utils/utils'
 
 function Transfer({ clicked, privateKey }) {
-    const[recipientAddress, setRecipientAddress] = useState('') 
-    const[amount, setAmount] = useState('')
+    const [recipientAddress, setRecipientAddress] = useState('') 
+    const [amount, setAmount] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
     
     const handleAddressInput = (e) => {
         setRecipientAddress(e.target.value)
@@ -16,7 +17,9 @@ function Transfer({ clicked, privateKey }) {
     }
 
     const handleTransfer = async() => {
+        setIsLoading(true)
         await transferFunds(privateKey, recipientAddress, amount)
+        setIsLoading(false)
     }
 
     return (
@@ -25,7 +28,9 @@ function Transfer({ clicked, privateKey }) {
                 <Stack mt='2rem' spacing={4} align='center'>
                     <Input placeholder='Enter Recipient Address' onChange={handleAddressInput} />
                     <Input placeholder='Enter Amount in ETH' onChange={handleAmountInput}/>
-                    <Button colorScheme='teal' size='lg' onClick={handleTransfer}>Transfer</Button>
+                    <Button colorScheme='teal' size='lg' onClick={handleTransfer} isDisabled={isLoading}>
+                        {isLoading ? <Spinner size='sm' /> : 'Transfer'}
+                    </Button>
                 </Stack>
             )}
         </>
