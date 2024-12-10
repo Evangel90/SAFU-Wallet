@@ -8,23 +8,23 @@ function UnsureTransfer({ clicked, privateKey }) {
     const [isLoading, setIsLoading] = useState(false)
     const [isTransferActive, setIsTransferActive] = useState(true)
 
-    useEffect(() => {
-        const UnsureTransferContract = getContract(privateKey)
+    // useEffect(() => {
+    //     const UnsureTransferContract = getContract(privateKey)
 
-        UnsureTransferContract.on("TransferConfirmed", () => {
-            setIsTransferActive(true)
-            setIsLoading(false)
-        })
+    //     UnsureTransferContract.on("TransferConfirmed", () => {
+    //         setIsTransferActive(true)
+    //         setIsLoading(false)
+    //     })
 
-        UnsureTransferContract.on("TransferCancelled", () => {
-            setIsTransferActive(true)
-            setIsLoading(false)
-        })
+    //     UnsureTransferContract.on("TransferCancelled", () => {
+    //         setIsTransferActive(true)
+    //         setIsLoading(false)
+    //     })
 
-        return () => {
-            UnsureTransferContract.removeAllListeners()
-        }
-    }, [privateKey])
+    //     return () => {
+    //         UnsureTransferContract.removeAllListeners()
+    //     }
+    // }, [privateKey])
 
     const handleAddressInput = (e) => {
         setRecipientAddress(e.target.value)
@@ -37,8 +37,9 @@ function UnsureTransfer({ clicked, privateKey }) {
 
     const handleUnsureTransfer = async () => {
         setIsLoading(true)
-        setIsTransferActive(false)
+        // setIsTransferActive(false)
         await unsureTransferInit(privateKey, recipientAddress, amount)
+        setIsLoading(false)
     }
 
     return (

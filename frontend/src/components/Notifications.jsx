@@ -32,8 +32,10 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
 
             if (account.address.toLowerCase() === sender.toLowerCase()) {
                 setItSender(true)
+                setItReceiver(false)
             } else if (account.address.toLowerCase() === receiver.toLowerCase()) {
                 setItReceiver(true)
+                setItSender(false)
             }
             setTxData(txEvent)
         })
