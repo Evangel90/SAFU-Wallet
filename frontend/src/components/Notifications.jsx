@@ -1,4 +1,7 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionPanel, AccordionItem, Box, Button, InputGroup, Input, InputRightElement, Stack, Text, ButtonGroup } from "@chakra-ui/react";
+import { 
+    Accordion, AccordionButton, AccordionIcon, AccordionPanel, AccordionItem, 
+    Box, Button, InputGroup, Input, InputRightElement, Stack, Text, ButtonGroup, Spinner
+} from "@chakra-ui/react";
 import { replyUnsureTransfer, getContract, cancelUnsureTransfer, confirmUnsureTransfer } from "../utils/utils";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers"
@@ -10,6 +13,7 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
     const [confirmationString, setConfirmationString] = useState()
     const [stringProvided, setStringProvided] = useState()
     const [txEnd, setTxEnd] = useState()
+    const [replyLoading, setReplyLoading] = useState(false)
 
     const UnsureTransferContract = getContract(privateKey)
 
@@ -71,8 +75,11 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
     const handleReply = async () => {
         try {
             console.log('...replying')
+            setReplyLoading(true)
             await replyUnsureTransfer(privateKey, confirmationString)
+            setReplyLoading(false)
         } catch (error) {
+            setReplyLoading(true)
             console.error('Reply error:', error)
         }
     }
@@ -159,7 +166,7 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
                                             />
                                             <InputRightElement width='4.5rem'>
                                                 <Button h='1.75rem' size='sm' colorScheme="green" onClick={handleReply}>
-                                                    Reply
+                                                    {replyLoading ? <Spinner size='sm' /> : 'Reply'}
                                                 </Button>
                                             </InputRightElement>
                                         </InputGroup>
