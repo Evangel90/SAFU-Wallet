@@ -14,13 +14,25 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
     const [stringProvided, setStringProvided] = useState()
     const [txEnd, setTxEnd] = useState()
     const [replyLoading, setReplyLoading] = useState(false)
-
+    const [confirmLoading, setConfirmLoading] = useState(false)
+    const [cancelLoading, setCancelLoading] = useState(false)
+    const [track, setTrack] = useState(false)
     const UnsureTransferContract = getContract(privateKey)
 
+    let transactionRunning = false
+
     useEffect(() => {
-        console.log('inside useEffect - notifications')
+        // console.log('inside useEffect - notifications')
 
         UnsureTransferContract.on("UnsureTransferInitiated", (sender, receiver, value, event) => {
+            console.log('UnsureTransfer Initiated')
+            if(transactionRunning) {
+                // console.log("Transaction already running")
+                return
+            } 
+            console.log("transaction running", transactionRunning)
+            transactionRunning = true
+            // console.log(" track 1")
             setTxEnd(false)
             setStringProvided(false)
             let txEvent = {
@@ -29,7 +41,7 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
                 value: value,
                 eventData: event
             }
-
+            
             if (account.address.toLowerCase() === sender.toLowerCase()) {
                 setItSender(true)
                 setItReceiver(false)
@@ -38,37 +50,56 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
                 setItSender(false)
             }
             setTxData(txEvent)
+            setTrack(!track)
         })
         // UnsureTransferContract.off("UnsureTransferInitiated")
 
         UnsureTransferContract.on("ConfirmationStringProvided", (sender, confirmedString, event) => {
+            console.log('Confirmation String Provided')
             setStringProvided(true)
             setConfirmationString(confirmedString)
             setTxEnd(false)
+            setTrack(!track)
+
         })
         // UnsureTransferContract.off("ConfirmationStringProvided")
 
         UnsureTransferContract.on("TransferConfirmed", (sender, receiver, amount, event) => {
+            console.log('Transfer Confirmed')
             setStringProvided(false)
             setTxEnd(true)
             setItReceiver(false)
             setItSender(false)
             setClicked(false)
+            // console.log(" track 2")
+            setTrack(!track)
+            transactionRunning = false
         })
         // UnsureTransferContract.off("TransferConfirmed")
 
         UnsureTransferContract.on("TransferCancelled", (sender, receiver, amoutToRefund, event) => {
+            console.log('Transfer Cancelled')
             setStringProvided(false)
             setTxEnd(true)
             setItReceiver(false)
             setItSender(false)
             setClicked(false)
+            // console.log(" track 3")
+            setTrack(!track)
+            transactionRunning = false
         })
+
+        console.log(`sender: ${itSender}, receiver: ${itReceiver}`)
         // UnsureTransferContract.off("TransferCancelled")
-        return () => {
-            UnsureTransferContract.removeAllListeners()
-        }
-    }, [])
+        
+        // return () => {
+            // }
+        }, [])
+        
+     useEffect(() => {
+        // console.log('end of useEffect - notifications' + txData)
+        UnsureTransferContract.removeAllListeners()
+    }, [track])
 
     const handleStringInput = (e) => {
         setConfirmationString(e.target.value)
@@ -76,39 +107,43 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
 
     const handleReply = async () => {
         try {
-            console.log('...replying')
+            // console.log('...replying')
             setReplyLoading(true)
             await replyUnsureTransfer(privateKey, confirmationString)
             setReplyLoading(false)
         } catch (error) {
             setReplyLoading(true)
-            console.error('Reply error:', error)
+            // console.error('Reply error:', error)
         }
     }
 
     const handleCancel = async () => {
         try {
+            setCancelLoading(true)
             await cancelUnsureTransfer(privateKey)
+            setCancelLoading(false)
             setItSender(false)
             setItReceiver(false)
             setStringProvided(false)
             setConfirmationString('')
             setTxData({})
         } catch (error) {
-            console.error('Cancel error:', error)
+            // console.error('Cancel error:', error)
         }
     }
 
     const handleConfirmTransaction = async () => {
         try {
+            setConfirmLoading(true)
             await confirmUnsureTransfer(privateKey)
+            setConfirmLoading(false)
             setItSender(false)
             setItReceiver(false)
             setStringProvided(false)
             setConfirmationString('')
             setTxData({})
         } catch (error) {
-            console.error('Confirmation error:', error)
+            // console.error('Confirmation error:', error)
         }
     }
 
@@ -137,16 +172,16 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
                                             <Text>{`Receiver provided confirmation string: ${confirmationString}`}</Text>
                                             <ButtonGroup spacing={4}>
                                                 <Button colorScheme='green' onClick={handleConfirmTransaction}>
-                                                    Confirm Transaction
+                                                    {confirmLoading ? <Spinner size='sm'/>: 'Confirm Transaction'}
                                                 </Button>
                                                 <Button colorScheme='red' onClick={handleCancel}>
-                                                    Cancel Transaction
+                                                    {cancelLoading ? <Spinner size='sm'/>: 'Cancel Transaction'}
                                                 </Button>
                                             </ButtonGroup>
                                         </>
                                     ) : !txEnd && (
                                             <Button colorScheme='red' onClick={handleCancel}>
-                                                Cancel Transfer
+                                                {cancelLoading ? <Spinner size='sm'/>: 'Cancel Transaction'}
                                             </Button>
                                         )
                                     }
@@ -157,7 +192,7 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
                             <AccordionPanel pb={4}>
                                 <Stack spacing={4}>
                                     <Text>{`Incoming 'Unsure Transfer' of ${txData.value ? ethers.formatEther(txData.value) : '0'} ETH from ${txData.sender}`}</Text>
-                                    {console.log(stringProvided)}
+                                    {/* { console.log(stringProvided)} */}
                                     {(!stringProvided && !txEnd) && (
                                         <InputGroup size='md'>
                                             <Input
