@@ -17,20 +17,19 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
     const [confirmLoading, setConfirmLoading] = useState(false)
     const [cancelLoading, setCancelLoading] = useState(false)
     const [track, setTrack] = useState(false)
-    const UnsureTransferContract = getContract(privateKey)
-
     let transactionRunning = false
+    const UnsureTransferContract = getContract(privateKey)
 
     useEffect(() => {
         // console.log('inside useEffect - notifications')
 
         UnsureTransferContract.on("UnsureTransferInitiated", (sender, receiver, value, event) => {
-            console.log('UnsureTransfer Initiated')
+            
             if(transactionRunning) {
                 // console.log("Transaction already running")
                 return
             } 
-            console.log("transaction running", transactionRunning)
+            // console.log("transaction running", transactionRunning)
             transactionRunning = true
             // console.log(" track 1")
             setTxEnd(false)
@@ -55,7 +54,6 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
         // UnsureTransferContract.off("UnsureTransferInitiated")
 
         UnsureTransferContract.on("ConfirmationStringProvided", (sender, confirmedString, event) => {
-            console.log('Confirmation String Provided')
             setStringProvided(true)
             setConfirmationString(confirmedString)
             setTxEnd(false)
@@ -65,7 +63,6 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
         // UnsureTransferContract.off("ConfirmationStringProvided")
 
         UnsureTransferContract.on("TransferConfirmed", (sender, receiver, amount, event) => {
-            console.log('Transfer Confirmed')
             setStringProvided(false)
             setTxEnd(true)
             setItReceiver(false)
@@ -78,7 +75,6 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
         // UnsureTransferContract.off("TransferConfirmed")
 
         UnsureTransferContract.on("TransferCancelled", (sender, receiver, amoutToRefund, event) => {
-            console.log('Transfer Cancelled')
             setStringProvided(false)
             setTxEnd(true)
             setItReceiver(false)
@@ -88,8 +84,6 @@ function Notifications({ clicked, setClicked, privateKey, account }) {
             setTrack(!track)
             transactionRunning = false
         })
-
-        console.log(`sender: ${itSender}, receiver: ${itReceiver}`)
         // UnsureTransferContract.off("TransferCancelled")
         
         // return () => {
