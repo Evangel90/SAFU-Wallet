@@ -7,6 +7,7 @@ const contractName = "UnsureTransfer"
 const cancelTransfer = async () => {
     const accounts = await ethers.getSigners()
     const senderAccount = accounts[0]
+    
     const contract = await ethers.getContractAt(contractName, contractAddr, senderAccount);
     
     contract.on("TransferCancelled", (sender, receiver, amount) => {
